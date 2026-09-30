@@ -1,0 +1,6 @@
+[submodule "sabalive"]
+	path = sabalive
+	url = https://github.com/KDR9MGR/sabalive.git
+[submodule "sabaliveadmin"]
+	path = sabaliveadmin
+	url = https://github.com/KDR9MGR/sabaliveadmin.git
