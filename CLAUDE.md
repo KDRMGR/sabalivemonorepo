@@ -37,3 +37,13 @@ panel (Live Monitor). Key design points, so you don't break them:
 - `join_live_stream` leaves no viewer row / chat line for ghosts; `assert_not_ghost`
   triggers refuse their writes. New user-written tables should get that trigger.
 - Panel counts/lists filter `is_ghost = false`.
+
+## Panel-managed app features (keep app and panel in sync)
+- Levels: `track_levels` (Wealth / Charm XP + join image) edited in Master -> Levels; the join row
+  carries `level_image_url` and the app plays it full-screen.
+- Coin sellers (`offline_coin_sellers`, linked to a user), Support chat (`support_threads/messages`),
+  Lucky IDs (`lucky_ids`; owning one swaps `profiles.display_id`, expiry restores it), user Bag assign
+  and profile edit (`admin_*` RPCs), Master seat handover (`master_handover_staff_seat`).
+- Newer panel capability keys (`monitor_lives`, `manage_levels`, `manage_support`) are on by default for
+  a Master and enforced in SQL by `staff_cap_on(key)` (explicit false blocks).
+- Realtime cannot filter DELETE events: never put a `filter:` on a delete listener, check the old record.
