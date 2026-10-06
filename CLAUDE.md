@@ -19,7 +19,30 @@ Two independent apps on one Supabase project (ref `sfehzhtqtpuobnrvzvzp`):
 - Deploy order when a change touches both: migration -> functions -> panel/app.
   The panel can query columns the app doesn't need yet, so DB first.
 - Validate migrations by replaying all of them on a scratch local Postgres with stubbed
-  `auth`/`storage`/`cron`/`vault`/`net` schemas before pushing.
+  `auth`/`storage`/`cron`/`vault`/`net` schemas before pushing: `sabalive/scripts/db/replay_migrations.sh`.
+
+## Production safety (read before touching the database, Edge Functions, or a release)
+The one Supabase project is LIVE: the Play app (and old versions of it that stay in pockets for months),
+the panel and real users all use it. Full steps: `sabalive/docs/DEPLOY_CHECKLIST.md`.
+- **Never run anything against production without the user saying so in this conversation**: `supabase db push`,
+  `functions deploy`, SQL through `db query`, restarting, maintenance mode, "log out all users". A past approval
+  covers that one task only. Read-only checks (`scripts/prod/healthcheck.sh`) are fine.
+- **Only add while old apps are live.** New table / column with a default / function with a NEW name: safe.
+  Renaming or dropping anything the app uses, changing a function's arguments or return type, `not null`
+  on an existing column, tightening a policy the app needs: never. Add `..._v2` and retire the old one later.
+  Changing a function body, a trigger on a busy table, `alter column type`, or a bulk `update` is risky:
+  quiet hour only (about 21:00-04:00 UTC), small batches, `set local lock_timeout`.
+- **Every change is a migration in git.** No hand-run SQL on production. `supabase db push` applies EVERYTHING
+  pending, including other sessions' unreviewed work: read `--dry-run`, and if it lists a migration you did not
+  write or were not asked to ship, stop and ask.
+- **Before a push:** `sabalive/scripts/db/replay_migrations.sh` (ALL_OK), a `supabase/rollbacks/<version>_down.sql`
+  for each migration, `scripts/prod/healthcheck.sh` and `scripts/prod/smoke_play_app.sh` clean, and
+  `scripts/prod/backup.sh` (BACKUP OK; the free plan has no backups). **After:** run the last two again.
+- **If production misbehaves:** healthcheck first, smoke test second, then the down script of the suspect
+  migration. Maintenance mode and "log out all users" are last resorts, not first reactions.
+- **Don't change the version code or build a release unless asked.** Build Play bundles with
+  `sabalive/scripts/release/build_play_bundle.sh`, which refuses a staging build.
+- The database has only **60 connections** on this plan: don't add polling or per-client queries that multiply.
 
 ## Roles
 Ladder: Super > Master (`admin`) > Global > Country > Sub > Agency. Enforced in
