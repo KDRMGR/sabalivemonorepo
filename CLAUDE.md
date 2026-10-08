@@ -44,6 +44,14 @@ the panel and real users all use it. Full steps: `sabalive/docs/DEPLOY_CHECKLIST
   `sabalive/scripts/release/build_play_bundle.sh`, which refuses a staging build.
 - The database has only **60 connections** on this plan: don't add polling or per-client queries that multiply.
 
+## Staging and branches
+- **Staging** is a second Supabase project, `gsloixbaktefwgxzjtps` (production is `sfehzhtqtpuobnrvzvzp`), built from the same
+  migrations with fake data. Use `sabalive/scripts/staging/*` (they use their own link folder, never production's) and read
+  `sabalive/docs/STAGING.md`. Anything risky is rehearsed there first, then promoted to production with the same migration
+  files via `docs/DEPLOY_CHECKLIST.md`. Never copy production data into staging.
+- **Branches:** work on `develop` in each repo; `main` is production (the panel deploys from it). Move work to `main` only
+  when the owner asks for a release. Don't commit straight to `main`.
+
 ## Roles
 Ladder: Super > Master (`admin`) > Global > Country > Sub > Agency. Enforced in
 Postgres (RLS + `SECURITY DEFINER` RPCs); the panel's capability list
