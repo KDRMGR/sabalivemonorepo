@@ -49,8 +49,12 @@ the panel and real users all use it. Full steps: `sabalive/docs/DEPLOY_CHECKLIST
   migrations with fake data. Use `sabalive/scripts/staging/*` (they use their own link folder, never production's) and read
   `sabalive/docs/STAGING.md`. Anything risky is rehearsed there first, then promoted to production with the same migration
   files via `docs/DEPLOY_CHECKLIST.md`. Never copy production data into staging.
-- **Branches:** work on `develop` in each repo; `main` is production (the panel deploys from it). Move work to `main` only
-  when the owner asks for a release. Don't commit straight to `main`.
+- **Branches: only `main`, in all three repos** (the owner's decision, 2026-10-15: `develop` and `main-release` were merged
+  into it and deleted). Work and commit on `main`. Nothing deploys from the app's or the monorepo's `main`, but **the panel
+  deploys to production from `main` on every push** (Vercel): push panel changes only when they are tested and the owner has
+  said so (commit locally until then). Use a short-lived branch only for a Vercel Preview or a risky experiment, and delete
+  it once merged. `main` can therefore hold code that is not on Play yet: releases are marked by tags, `prod-YYYYMMDD` for
+  the production state and `play-N` for the commit a Play bundle was built from. A push (any repo) still needs the owner's word.
 
 ## Roles
 Ladder: Super > Master (`admin`) > Global > Country > Sub > Agency. Enforced in
