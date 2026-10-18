@@ -31,7 +31,8 @@ the panel and real users all use it. Full steps: `sabalive/docs/DEPLOY_CHECKLIST
   Renaming or dropping anything the app uses, changing a function's arguments or return type, `not null`
   on an existing column, tightening a policy the app needs: never. Add `..._v2` and retire the old one later.
   Changing a function body, a trigger on a busy table, `alter column type`, or a bulk `update` is risky:
-  quiet hour only (about 21:00-04:00 UTC), small batches, `set local lock_timeout`.
+  small batches and `set local lock_timeout` (any hour is allowed: the owner removed the quiet-window rule on 2026-10-18; a
+  quieter hour only makes a risky change cheaper, it is no longer required).
 - **Every change is a migration in git.** No hand-run SQL on production. `supabase db push` applies EVERYTHING
   pending, including other sessions' unreviewed work: read `--dry-run`, and if it lists a migration you did not
   write or were not asked to ship, stop and ask.
