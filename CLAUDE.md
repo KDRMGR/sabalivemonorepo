@@ -82,4 +82,6 @@ panel (Live Monitor). Key design points, so you don't break them:
   and profile edit (`admin_*` RPCs), Master seat handover (`master_handover_staff_seat`).
 - Newer panel capability keys (`monitor_lives`, `manage_levels`, `manage_support`) are on by default for
   a Master and enforced in SQL by `staff_cap_on(key)` (explicit false blocks).
+- Profile tags (`profile_tags`, given in the panel's Tags page, capability `manage_tags`: Super + Master by default, others via Access Control), Fans (= mutual follows,
+  `profiles.fans_count` + `get_fans`) and the post-login date of birth + country step (app-side, 13+) are described in `sabalive/CLAUDE.md`.
 - Realtime cannot filter DELETE events: never put a `filter:` on a delete listener, check the old record.
