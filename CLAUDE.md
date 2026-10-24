@@ -15,6 +15,9 @@ Two independent apps on one Supabase project (ref `sfehzhtqtpuobnrvzvzp`):
 - Migrations: `sabalive/supabase/migrations/` (timestamped, applied in order).
   Apply with `supabase db push` from `sabalive/` (CLI is linked to the project above).
   `--dry-run` first. The Supabase MCP in this account does NOT reach this project.
+- The CLI must act as the **sabalive** account (`supabase projects list` shows `sabalive` and `sabalive-staging`). The scripts load `SUPABASE_ACCESS_TOKEN` from
+  `~/sabalive-secrets/supabase.env` (outside git, mode 600; how to make it: `sabalive/docs/DEPLOY_CHECKLIST.md` > "Supabase login") so a wrong stored login can't redirect them.
+  Never paste a token or key in chat.
 - Edge Functions: `sabalive/supabase/functions/` (`supabase functions deploy <name>`).
 - Deploy order when a change touches both: migration -> functions -> panel/app.
   The panel can query columns the app doesn't need yet, so DB first.
