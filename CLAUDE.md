@@ -87,4 +87,6 @@ panel (Live Monitor). Key design points, so you don't break them:
   a Master and enforced in SQL by `staff_cap_on(key)` (explicit false blocks).
 - Profile tags (`profile_tags`, given in the panel's Tags page, capability `manage_tags`: Super + Master by default, others via Access Control), Fans (= mutual follows,
   `profiles.fans_count` + `get_fans`) and the post-login date of birth + country step (app-side, 13+) are described in `sabalive/CLAUDE.md`.
+- Games: Tulasi (`merchant_games`) and SUD (`sud_games`, own table, own Edge Function `sud`, own switches `sud_games_enabled` / `sud_coin_games_enabled`, default off; the games page of the SUD web SDK is
+  `sabaliveadmin/landing` `/sud/play`). Managed in the panel's Games page. See `sabalive/docs/TULASI_GAMES.md` and `sabalive/docs/SUD_GAMES.md`; SUD secrets are set by the owner only.
 - Realtime cannot filter DELETE events: never put a `filter:` on a delete listener, check the old record.
